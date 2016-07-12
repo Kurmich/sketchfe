@@ -4,6 +4,7 @@ Created on Tue Mar 22 16:31:44 2016
 
 @author: kurmanbek kaiyrbekov
 @author: ozan can altiok
+
 """
 
 import Point
