@@ -84,7 +84,7 @@ class IDMFeatureExtractor(FeatureExtractor):
         imsize = np.array([ 2 * grid_width, 2 * grid_height ])
         scale  = ( imsize )/ ( 2.5 * 2 )
         cur_angle2 = ( cur_angle + 180 ) % 360
-        image = np.zeros( imsize )
+        image = np.zeros( (int(2*grid_width),int(2*grid_height)) )
         pixels = []
         
         if( endpt == False ):
@@ -108,9 +108,14 @@ class IDMFeatureExtractor(FeatureExtractor):
                 transformed = self.transform(ends, center, scale, imsize)
                 #Assign 1.0 to endpoints
                 for ind in range(0, len(transformed)):
+<<<<<<< HEAD
                     image[ transformed[ind, 1], transformed[ind, 0] ] = 1.0 #WHY X is second coordinate?
                 
         #smooth feature image
+=======
+                    image[ transformed[ind, 1].astype(np.int64), transformed[ind, 0].astype(np.int64) ] = 1.0 #WHY X is second coordinate?
+                    
+>>>>>>> origin/master
         image = self.smoothim(image, sigma, hsize)
         #downsample feature image
         image = self.downsample(image)
@@ -123,10 +128,14 @@ class IDMFeatureExtractor(FeatureExtractor):
         return
 
     def pointsToImage(self, sketch, imsize, pixels, center, scale ):
+<<<<<<< HEAD
         '''Assigns pixel values to a 24x24 grid.
         Returns 24x24 grid filled with the pixel values.
         '''
         image = np.zeros( imsize )
+=======
+        image = np.zeros( imsize.astype(np.int64) )
+>>>>>>> origin/master
         for ind in range(0, len(sketch.strokes)):
             #Render coordinates of each stroke to range between 0-23
             transformed = self.transform( sketch.strokes[ind].listCoordinates(), center, scale, imsize )
@@ -145,8 +154,8 @@ class IDMFeatureExtractor(FeatureExtractor):
             if( pixels[ind] > 0 ):
                 x, y = self.bresenham( c[0,0], c[0, 1], c[1,0], c[1,1])
                 for j in range(0, len(x)):
-                    if(image[y[j], x[j]] < pixels[ind]):
-                        image[y[j], x[j]] = pixels[ind]
+                    if(image[y[j].astype(np.int64), x[j].astype(np.int64)] < pixels[ind]):
+                        image[y[j].astype(np.int64), x[j].astype(np.int64)] = pixels[ind]
                         
         return image
             
@@ -168,7 +177,7 @@ class IDMFeatureExtractor(FeatureExtractor):
             dy   = temp
             
         if( dy == 0 ):
-            q = np.zeros((dx+1, 1))
+            q = np.zeros((dx.astype(np.int64)+1, 1))
         else:
             temp = np.array( [0] )
             arr = np.arange( np.floor( dx/2 ), -dy*dx + np.floor( dx/2 ) - 1, -dy )
@@ -210,7 +219,7 @@ class IDMFeatureExtractor(FeatureExtractor):
         '''
         angle_threshold = 45
         valid_indices   = distance <= angle_threshold
-        invalid_indices = -valid_indices
+        invalid_indices = ~valid_indices
         distance[ valid_indices ]   = 1 - ( distance[ valid_indices ] / angle_threshold )
         distance[ invalid_indices ] = 0
         
@@ -321,7 +330,7 @@ class IDMFeatureExtractor(FeatureExtractor):
                         ax = j + (fj - hsize//2)
                         
                         if ax >= 0 and ay >= 0 and ax < xd and ay < yd:
-                            summ = summ + im[ay,ax] * gfilter[fi,fj]
+                            summ = summ + im[int(ay),int(ax)] * gfilter[fi,fj]
                             
                 result[i,j] = summ
         
